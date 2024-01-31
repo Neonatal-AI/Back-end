@@ -4,6 +4,7 @@ require('dotenv').config()
 const EXPRESS_PORT = process.env.PORT || 8000
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const SECRET = process.env.SECRET
+// connect to either local mongodb server or centralized server
 const CONNECTION_STRING = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 const FRONT_END = process.env.FRONT_END || "http://localhost:3000"
 console.log(`key${CONNECTION_STRING}\nExpress port: ${EXPRESS_PORT}\nTalking to: ${FRONT_END}`)
@@ -27,6 +28,7 @@ const validateUrl = require('./util/UrlCheck.js')
 const jobDescription = require('./util/GetJobDescription')
 
 // MongoDB client object
+// we will need to update the CONNECTION_STRING environment variable. this is dont on Heroku
 const client = new MongoClient(CONNECTION_STRING, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -48,9 +50,9 @@ async function run() {
   }
   run().catch(console.dir)
 
-// database variable declared empty globally
-let db = ''
-let users = {}
+// database variable declared empty globally -- unnecessary code. commented out before deletion
+// let db = ''
+// let users = {}
 
 // session storage on mongo
 const sessionStore = MongoStore.create({
@@ -59,7 +61,7 @@ const sessionStore = MongoStore.create({
     ttl: 3600
 })
 
-// global express middleware
+// express middleware
 const app = express()
     .set("trust proxy", 1)
     .use(session({
@@ -91,6 +93,8 @@ const app = express()
 app.get("/", (req, res) => {
     res.send("What are you doing here?\nI didn't want you to see me naked!")
 })
+// The registration endpoint should still exist, so users can create an account. 
+// it will need to be edited though.
 app.post('/registration', async (req, res) => {
     // our database and collection as variables
     const db = client.db('resGen')
@@ -133,8 +137,10 @@ app.post('/registration', async (req, res) => {
             domain: process.env.COOKIE_ALLOW,
             path: "/"
         })
+        // for security reasons, we don't actually want to console log the session cookie...
+        // console.log(res.cookie) 
+
         // return to the front end
-        console.log(res.cookie)
         return res.status(200).json({ 
             message: 'User created'
         })
@@ -188,6 +194,7 @@ app.post('/login', async (req, res) => {
         console.error(error)
     } 
 })
+// the logout API endpoint needs to be fixed.... currently, users are unable to logout.
 app.post('/logout', async (req, res) => {
     console.log(req.headers.cookies)
     let cookies = req.headers.cookies.split(';')
@@ -213,6 +220,17 @@ app.post('/logout', async (req, res) => {
     }
     return res.send({message:"logout Successful"})
 })
+// We should create an enpoint for renewing session cookies, so that users can stay logged in while active.
+// this backend endpoint should be hit every time the user does something, so that while they are active on the site
+// they will remain logged in.
+app.post('/refreshCookie', async (req, res) => {
+})
+
+// this function adds to the database.... It will require EXTENSIVE revision. 
+// Our database may be a little more complex than what I implemented for this last application.
+// We will want to include separation between user accounts and patient information
+// we may be able to generalize to some degree and have a single endpoint to store information to the database, 
+// but we may also want to consider 
 app.post('/historyPost', async (req, res) => {
     const db = client.db('resGen')
     const document = req.body
@@ -228,6 +246,7 @@ app.post('/historyPost', async (req, res) => {
         res.status(500).json({ message: 'An error occurred' })
     }
 })
+
 app.get('/historyGet', async (req, res) => {
     const db = client.db('resGen');
     try {
@@ -239,6 +258,9 @@ app.get('/historyGet', async (req, res) => {
         res.status(500).json({ error: error.toString() });
     }
 })
+
+// this endpoint was never fully built out. 
+// it might prove useful, however
 app.post('/handleFile', async (req, res) => {
     console.log(req)
 })
@@ -276,7 +298,10 @@ app.post('/completions2', async (req, res) => {
     const job = jobDescription(req, OPENAI_API_KEY)
     console.log(job)
 })
+
+
 // socket configuration
+// I never got sockets working.
 // const { Server } = require("socket.io");
 
 // const io = new Server({ /* options */ });
