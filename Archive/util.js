@@ -1,3 +1,8 @@
+// this is all done in the server file... 
+// HOWEVER, it would make the server file easier to rread?
+// personally, I don't find it dificult to read now, but maybe I'm crazy.
+// I also moved away from JWT tokens 
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 

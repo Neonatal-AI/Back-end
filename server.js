@@ -50,10 +50,6 @@ async function run() {
   }
   run().catch(console.dir)
 
-// database variable declared empty globally -- unnecessary code. commented out before deletion
-// let db = ''
-// let users = {}
-
 // session storage on mongo
 const sessionStore = MongoStore.create({
     mongoUrl: `${CONNECTION_STRING}`,
@@ -88,11 +84,14 @@ const app = express()
     .use(morgan('tiny'))
 
 
-// API endpoints
+// API ENDPOINTS
+
+
 // why not. a little fun html output in case someone navigates to my server url
 app.get("/", (req, res) => {
     res.send("What are you doing here?\nI didn't want you to see me naked!")
 })
+
 // The registration endpoint should still exist, so users can create an account. 
 // it will need to be edited though.
 app.post('/registration', async (req, res) => {
@@ -137,8 +136,6 @@ app.post('/registration', async (req, res) => {
             domain: process.env.COOKIE_ALLOW,
             path: "/"
         })
-        // for security reasons, we don't actually want to console log the session cookie...
-        // console.log(res.cookie) 
 
         // return to the front end
         return res.status(200).json({ 
@@ -170,7 +167,6 @@ app.post('/login', async (req, res) => {
         if (!correctPass) {
             return res.status(403).json({ message: 'invalid credentials' })
         } else {
-
             req.session.isAuth = existingUser._id.toString()
             console.log(process.env.COOKIE_ALLOW)
             const expires = req.session.cookie.expires
@@ -185,7 +181,6 @@ app.post('/login', async (req, res) => {
                 domain: process.env.COOKIE_ALLOW,
                 path: "/"
             })
-
             return res.status(200).json({
                 message: "Login Successful"
             })
@@ -264,6 +259,7 @@ app.get('/historyGet', async (req, res) => {
 app.post('/handleFile', async (req, res) => {
     console.log(req)
 })
+// This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/completions', async (req, res) => {
     const options = {
         method: "POST",
@@ -290,8 +286,10 @@ app.post('/completions', async (req, res) => {
         console.log(`these were your options: ${options}`)
     }
 })
+
 // this is a reconstruction of the input handling and 
-// subsequent api requests to gpt for completions
+// subsequent api requests to OpenAI
+// we could 
 app.post('/completions2', async (req, res) => {
     // top level vars for 
     
@@ -301,7 +299,7 @@ app.post('/completions2', async (req, res) => {
 
 
 // socket configuration
-// I never got sockets working.
+// I never got sockets working. but it really would be nice... not necessary but nice.
 // const { Server } = require("socket.io");
 
 // const io = new Server({ /* options */ });
