@@ -1,9 +1,10 @@
 // environment variable declaration n shit. 
-// DOTENC mod only for local env. fallbacks in case.
+// DOTENV mod only for local env. fallbacks in case.
 require('dotenv').config()
 const EXPRESS_PORT = process.env.PORT || 8000
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const SECRET = process.env.SECRET
+
 // connect to either local mongodb server or centralized server
 const CONNECTION_STRING = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 const FRONT_END = process.env.FRONT_END || "http://localhost:3000"
@@ -21,6 +22,8 @@ const MongoStore = require('connect-mongo')
 
 // encryption modules
 const bcrypt = require('bcrypt')
+
+
 // note
 // local imports
 const fetchAndParse = require('./util/scraper.js')
@@ -71,7 +74,7 @@ const app = express()
                 proxy: true,
                 sameSite: 'none', // cross-site
                 secure: true, // Set to true if using HTTPS
-                httpOnly: false, // Prevent client-side JavaScript from accessing cookies
+                httpOnly: true, // Prevent client-side JavaScript from accessing cookies
                 maxAge: 1000*60*30, // Session expiration time (in milliseconds)
                 domain: process.env.COOKIE_ALLOW,
                 path: "/"
@@ -131,7 +134,7 @@ app.post('/registration', async (req, res) => {
             proxy: true,
             sameSite: 'none', // cross-site
             secure: true, // Set to true if using HTTPS
-            httpOnly: false, // Prevent client-side JavaScript from accessing cookies
+            httpOnly: true, // Prevent client-side JavaScript from accessing cookies
             maxAge: 60*30*1000, // Session expiration time (in milliseconds)
             domain: process.env.COOKIE_ALLOW,
             path: "/"
