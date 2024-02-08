@@ -149,6 +149,7 @@ app.post('/registration', async (req, res) => {
         res.status(500).json({ message: 'OH NO! something went wrong!', error })
     }
 })
+
 app.post('/login', async (req, res) => {
     let db = client.db('resGen')
     let collection = db.collection('users') 
@@ -208,7 +209,7 @@ app.post('/logout', async (req, res) => {
             proxy: true,
             sameSite: 'none', // cross-site
             secure: true, // Set to true if using HTTPS
-            httpOnly: false, // Prevent client-side JavaScript from accessing cookies
+            httpOnly: true, // Prevent client-side JavaScript from accessing cookies
             // maxAge: 0, // Session expiration time (in milliseconds)
             domain: process.env.COOKIE_ALLOW,
             path: "/"
