@@ -193,32 +193,21 @@ app.post('/login', async (req, res) => {
         console.error(error)
     } 
 })
-// the logout API endpoint needs to be fixed.... currently, users are unable to logout.
-app.post('/logout', async (req, res) => {
-    console.log(req.headers.cookies)
-    let cookies = req.headers.cookies.split(';')
-    try{
-        for (let cookie of cookies) { 
-        console.log(cookie)
-        let split = cookie.split("=")
-        let cookieName = split[0]
-        console.log(cookieName)
-        res.header('Access-Control-Allow-Origin', FRONT_END);
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.clearCookie(cookieName, {
-            proxy: true,
-            sameSite: 'none', // cross-site
-            secure: true, // Set to true if using HTTPS
-            httpOnly: true, // Prevent client-side JavaScript from accessing cookies
-            // maxAge: 0, // Session expiration time (in milliseconds)
-            domain: process.env.COOKIE_ALLOW,
-            path: "/"
-        })}
-    }catch (error){
-        console.error(error)
-    }
-    return res.send({message:"logout Successful"})
-})
+// all og the authentication functions are kind of inadequate. needs better security.
+app.get('/logout', (req, res) => {
+    // Destroy the session
+    req.session.destroy(err => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).send('Error destroying session');
+      } else {
+        // Clear the session cookies
+        res.clearCookie('your-session-cookie-name');
+        // Redirect or send response as needed
+        res.redirect('/'); // Redirect to homepage after logout
+      }
+    });
+  });
 // We should create an enpoint for renewing session cookies, so that users can stay logged in while active.
 // this backend endpoint should be hit every time the user does something, so that while they are active on the site
 // they will remain logged in.
