@@ -10,6 +10,7 @@
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "bson": "^5.3.0",
+    "cheerio": "^1.0.0-rc.12",
     "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -27,11 +28,13 @@
     "mongoose": "^7.3.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nodemon": "^1.19.4",
-    "openai": "^3.2.1",
+    "node": "^18.20.0",
+    "nodemon": "^3.1.0",
+    "openai": "^4.29.2",
     "path": "^0.12.7",
+    "puppeteer": "^22.6.1",
     "react": "^18.2.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "selenium-webdriver": "^4.10.0",
     "serve": "^14.2.0",
     "socket.io": "^4.7.0",
@@ -59,5 +62,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neonatal-AI/Back_end.git"
+  },
+  "author": "R-dug",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Neonatal-AI/Back_end/issues"
+  },
+  "homepage": "https://github.com/Neonatal-AI/Back_end#readme"
 }

@@ -26,7 +26,7 @@ const bcrypt = require('bcrypt')
 
 // note
 // local imports
-const fetchAndParse = require('./util/scraper.js')
+const { getEpboResults } = require('./util/scraper.js')
 const validateUrl = require('./util/UrlCheck.js')
 const jobDescription = require('./util/GetJobDescription')
 
@@ -253,32 +253,59 @@ app.post('/handleFile', async (req, res) => {
     console.log(req)
 })
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
-app.post('/completions', async (req, res) => {
-    const options = {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${OPENAI_API_KEY}`,
-            "content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model:"gpt-3.5-turbo",
-            messages: [{role:"system",content:"You are to respond to requests for polished resume's and cover letters, helping job seekers match these documents to job descriptions they also provide you."},{role: "user", content: req.body.prompt}],
-            temperature: 0.5,
-            max_tokens: 2000,
-        })
-    }
-    console.log("error on server before fetch", options)
-    try{
-        options.body["stream"] = true
-        const response = await fetch("https://api.openai.com/v1/chat/completions", options)
-        const data = await response.json()
-        res.send(data)
-        console.log("nice! this user made an API request")
-    }catch(error){
-        console.log(error)
-        console.log(`these were your options: ${options}`)
-    }
+app.post('/createDocs', async (req, res) => {
+// unpack input from the front end
+    gestational_age = req.body.inputFields.gestational_age
+    birth_weight = req.body.inputFields.birth_weight
+    singleton = req.body.inputFields.singleton
+    steroids = req.body.inputFields.steroids
+    sex = req.body.inputFields.sex
+    ethnicity = req.body.inputFields.ethnicity
+    ruptured_membrane = req.body.inputFields.birth_weight
+    length_of_ruptured_membrane = req.body.inputFields.length_of_ruptured_membrane
+    pre_eclampsia = req.body.inputFields.pre_eclampsia
+    clinician_notes = req.body.inputFields.clinician_notes
+
+    // unpack output options
+    literacy_level = req.body.outputOptions.literacy_level
+    translate = req.body.outputOptions.translate
+    language = req.body.outputOptions.language
+
+    // assign the return from the scraper tool to a document 
+
+    let survival = await fetchAndParse(gestational_age, birth_weight, sex, singleton, steroids)
+    console.log(survival)
+
+
+
+
+
+    // const options = {
+    //     method: "POST",
+    //     headers: {
+    //         "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    //         "content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify({
+    //         model:"gpt-3.5-turbo",
+    //         messages: [{role:"system",content:"You are to respond to requests for polished resume's and cover letters, helping job seekers match these documents to job descriptions they also provide you."},{role: "user", content: req.body.prompt}],
+    //         temperature: 0.5,
+    //         max_tokens: 2000,
+    //     })
+    // }
+    // console.log("error on server before fetch", options)
+    // try{
+    //     options.body["stream"] = true
+    //     const response = await fetch("https://api.openai.com/v1/chat/completions", options)
+    //     const data = await response.json()
+    //     res.send(data)
+    //     console.log("nice! this user made an API request")
+    // }catch(error){
+    //     console.log(error)
+    //     console.log(`these were your options: ${options}`)
+    // }
 })
+
 
 // this is a reconstruction of the input handling and 
 // subsequent api requests to OpenAI
