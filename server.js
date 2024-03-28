@@ -26,8 +26,8 @@ const bcrypt = require('bcrypt')
 
 // note
 // local imports
-const { getEpboResults } = require('./util/scraper.js')
-const validateUrl = require('./util/UrlCheck.js')
+import { getEpboResults } from './util/scraper.js'
+// const validateUrl = require('./util/UrlCheck.js')
 const jobDescription = require('./util/GetJobDescription')
 
 // MongoDB client object
