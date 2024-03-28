@@ -102,4 +102,4 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
 })();
 
 
-module.exports = getEpboResults;
+module.exports = {getEpboResults};
