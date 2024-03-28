@@ -15,6 +15,7 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true, slowMo: 30 });
   const page = await browser.newPage();
 
+  
   try {
     // Navigate to the form URL
     await page.goto(formUrl);
