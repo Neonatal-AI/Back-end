@@ -43,7 +43,8 @@
     "yup": "^1.2.0"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "heroku-postbuild": "bash postbuild.bash"
   },
   "eslintConfig": {
     "extends": [
