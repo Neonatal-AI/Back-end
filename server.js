@@ -242,7 +242,8 @@ app.post('/historyPost', async (req, res) => {
 
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
-// unpack input from the front end
+    console.log(req.body)
+    // unpack input from the front end
     gestational_age = req.body.inputFields.gestational_age
     birth_weight = req.body.inputFields.birth_weight
     singleton = req.body.inputFields.singleton
@@ -260,9 +261,12 @@ app.post('/createDocs', async (req, res) => {
     language = req.body.outputOptions.language
 
     // assign the return from the scraper tool to a document 
-
-    let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
-    console.log(survival)
+    try{
+        let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
+        console.log(survival)
+    }catch(error){
+        console.log(error)
+    }
 
 
 
