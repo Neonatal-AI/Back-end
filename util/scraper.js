@@ -1,7 +1,6 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const puppeteer = require('puppeteer');
-
-export async function getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid) {
+async function getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid) {
   const formUrl = 'https://www.nichd.nih.gov/research/supported/EPBO/use';
   const formData = {
     birth_weight: birthWeight.toString(),
@@ -103,4 +102,4 @@ export async function getEpboResults(gestationalAge, birthWeight, sex, singleton
 })();
 
 
-// module.exports.getEpboResults = getEpboResults;
+module.exports = getEpboResults;

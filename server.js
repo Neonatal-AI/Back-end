@@ -23,12 +23,9 @@ const MongoStore = require('connect-mongo')
 // encryption modules
 const bcrypt = require('bcrypt')
 
-
 // note
 // local imports
-import { getEpboResults } from './util/scraper.js'
-// const validateUrl = require('./util/UrlCheck.js')
-const jobDescription = require('./util/GetJobDescription')
+const scraper = require('./util/scraper.js')
 
 // MongoDB client object
 // we will need to update the CONNECTION_STRING environment variable. this is dont on Heroku
@@ -208,11 +205,7 @@ app.get('/logout', (req, res) => {
       }
     });
   });
-// We should create an enpoint for renewing session cookies, so that users can stay logged in while active.
-// this backend endpoint should be hit every time the user does something, so that while they are active on the site
-// they will remain logged in.
-app.post('/refreshCookie', async (req, res) => {
-})
+
 
 // this function adds to the database.... It will require EXTENSIVE revision. 
 // Our database may be a little more complex than what I implemented for this last application.
@@ -247,11 +240,6 @@ app.post('/historyPost', async (req, res) => {
 //     }
 // })
 
-// this endpoint was never fully built out. 
-// it might prove useful, however
-app.post('/handleFile', async (req, res) => {
-    console.log(req)
-})
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
 // unpack input from the front end
@@ -273,7 +261,7 @@ app.post('/createDocs', async (req, res) => {
 
     // assign the return from the scraper tool to a document 
 
-    let survival = await getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
+    let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
     console.log(survival)
 
 
@@ -305,18 +293,6 @@ app.post('/createDocs', async (req, res) => {
     //     console.log(`these were your options: ${options}`)
     // }
 })
-
-
-// this is a reconstruction of the input handling and 
-// subsequent api requests to OpenAI
-// we could 
-app.post('/completions2', async (req, res) => {
-    // top level vars for 
-    
-    const job = jobDescription(req, OPENAI_API_KEY)
-    console.log(job)
-})
-
 
 // socket configuration
 // I never got sockets working. but it really would be nice... not necessary but nice.
