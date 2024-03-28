@@ -11,7 +11,7 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
 
   // Launch Puppeteer (with or without headless mode)
   //const browser = await puppeteer.launch({ headless: true });
-  const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true, slowMo: 30 });
+  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
   const page = await browser.newPage();
 
 
@@ -96,9 +96,11 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   const sex = 0;
   const singleton = 0;
   const steroid = 0;
-
+  let time1 = new Date().getTime();
   const survival = await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid);
+  let time2 = new Date().getTime();
   console.log(survival);
+  console.log(time2 - time1, "ms");
 })();
 
 
