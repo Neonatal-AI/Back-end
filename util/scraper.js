@@ -12,7 +12,7 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
 
   // Launch Puppeteer (with or without headless mode)
   //const browser = await puppeteer.launch({ headless: true });
-  const browser = await puppeteer.launch({ headless: false, slowMo: 30 });
+  const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true, slowMo: 30 });
   const page = await browser.newPage();
 
   try {
