@@ -17,7 +17,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 
 // Mongo Modules
-const {MongoClient, ServerApiVersion, ObjectId} = require('mongodb')
+const {MongoClient, ServerApiVersion} = require('mongodb')
 const MongoStore = require('connect-mongo')
 
 // encryption modules
@@ -235,17 +235,17 @@ app.post('/historyPost', async (req, res) => {
     }
 })
 
-app.get('/historyGet', async (req, res) => {
-    const db = client.db('resGen');
-    try {
-        const collection = db.collection('history');
+// app.get('/historyGet', async (req, res) => {
+//     const db = client.db('resGen');
+//     try {
+//         const collection = db.collection('history');
 
-        const data = await collection.find({userid: req.headers.id}).toArray();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.toString() });
-    }
-})
+//         const data = await collection.find({userid: req.headers.id}).toArray();
+//         res.json(data);
+//     } catch (error) {
+//         res.status(500).json({ error: error.toString() });
+//     }
+// })
 
 // this endpoint was never fully built out. 
 // it might prove useful, however
