@@ -80,7 +80,13 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
 
     // Log the extracted information
     // console.log('Extracted Information:', average_survival_active_treatment);
-    return average_survival_active_treatment;
+    return new Promise((resolve, reject) => {
+        // Simulate asynchronous operation
+        setTimeout(() => {
+          resolve({ average_survival_active_treatment });
+        }, 1000);
+      });
+    // return average_survival_active_treatment;
   } catch (error) {
     console.error('Error:', error);
   } finally {
