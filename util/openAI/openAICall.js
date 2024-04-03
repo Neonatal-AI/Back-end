@@ -1,7 +1,7 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 const fs = require('fs');
-const sysPromptPath = './fellow_handout_sys.txt';
+const sysPromptPath = `${__dirname}/fellow_handout_sys.txt`;
 let sysPrompt = '';
 const promptPath = './testPrompt.txt';
 let prompt = '';
