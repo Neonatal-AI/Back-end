@@ -265,6 +265,7 @@ app.post('/createDocs', async (req, res) => {
     // assign the return from the scraper tool to a document 
     try{
         let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
+        console.log(`survival: ${survival}`)
         let prompt = `information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
