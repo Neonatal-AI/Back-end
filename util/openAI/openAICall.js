@@ -21,7 +21,7 @@ function readPrompt(path) {
 }
 
 async function fetchData(sysPrompt, prompt, config){
-    // debuggin print statements
+    // debugging print statements
     // console.log('Sys prompt file:');
     // console.log(sysPromptPath);
     // console.log('Sys prompt:');
@@ -59,14 +59,27 @@ async function fetchData(sysPrompt, prompt, config){
         throw error
     }
 }
-async function promptGPT() {
-    [sysPrompt, prompt, config] = await Promise.all([
-        readPrompt(sysPromptPath),
-        readPrompt(promptPath),
-        readPrompt(configPath)
+async function promptGPT(prompt, config) {
+    [sysPrompt] = await Promise.all([
+        readPrompt(sysPromptPath)
     ])
     fetchData(sysPrompt, prompt, config)
 }
-promptGPT()
+const test_prompt_params = {gestational_age : 30,
+    birth_weight :500,
+    singleton : true,
+    steroids : false,
+    sex : "male",
+    ethnicity : "white",
+    ruptured_membrane : false,
+    length_of_ruptured_membrane : null,
+    pre_eclampsia : false,
+    clinician_notes : "The parents are very worried about outcomes."};
+const testConfig = {
+    literacy_level : "basic",
+    translate : "no",
+    language : null
+};
+promptGPT(JSON.stringify(test_prompt_params), JSON.stringify(testConfig))
 
 module.exports = { promptGPT }
