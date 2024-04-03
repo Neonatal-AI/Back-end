@@ -33,7 +33,7 @@ const puppeteer = require('puppeteer');
   });
 
   // Navigate to the URL where the request should be sent
-  await page.goto('https://analytics.google.com');
+  await page.goto('');
 
   await browser.close();
 })();
