@@ -78,15 +78,14 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
       console.error("Error: grid-results div not found");
     }
 
-    // Log the extracted information
-    // console.log('Extracted Information:', average_survival_active_treatment);
-    return new Promise((resolve, reject) => {
-        // Simulate asynchronous operation
-        setTimeout(() => {
-          resolve({ average_survival_active_treatment });
-        }, 1000);
-      });
-    // return average_survival_active_treatment;
+    // return the extracted information... I am not sure how I want to return it... 
+    // return new Promise((resolve, reject) => {
+    //     // Simulate asynchronous operation
+    //     setTimeout(() => {
+    //       resolve({ average_survival_active_treatment });
+    //     }, 1000);
+    //   });
+    return average_survival_active_treatment;
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -94,22 +93,23 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   }
 }
 
-(async () => {
-  const gestationalAge = 22;
-  const birthWeight = 401;
+//  // a test of the function.
+// (async () => {
+//   const gestationalAge = 22;
+//   const birthWeight = 401;
 
-  //0 or 1 for buttons as they appear on page (0 is male, yes, yes)
-  const sex = 0;
-  const singleton = 0;
-  const steroid = 0;
-  let time1 = new Date().getTime();
-  let survival = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
-  let time2 = new Date().getTime();
-  let runtime = time2 - time1;
-  console.log("", survival);
-  console.log("runtime: ", runtime, "ms");
-  survival += runtime;
-})();
+//   //0 or 1 for buttons as they appear on page (0 is male, yes, yes)
+//   const sex = 0;
+//   const singleton = 0;
+//   const steroid = 0;
+//   let time1 = new Date().getTime();
+//   let survival = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
+//   let time2 = new Date().getTime();
+//   let runtime = time2 - time1;
+//   console.log("", survival);
+//   console.log("runtime: ", runtime, "ms");
+//   survival += runtime;
+// })();
 
 
 module.exports = {getEpboResults};

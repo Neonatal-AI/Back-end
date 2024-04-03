@@ -3,10 +3,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const fs = require('fs');
 const sysPromptPath = `${__dirname}/fellow_handout_sys.txt`;
 let sysPrompt = '';
-const promptPath = './testPrompt.txt';
-let prompt = '';
-const configPath = './output_config.txt';
-let config = '';
+
 
 function readPrompt(path) {
     return new Promise((resolve, reject) => {
@@ -49,7 +46,7 @@ async function fetchData(sysPrompt, prompt, config){
     try{
         const response = await fetch("https://api.openai.com/v1/chat/completions", options)
         const data = await response.json()
-        console.log(data)
+        // console.log(data)
         const messageContent = data.choices[0].message.content.toString()
         console.log(data.choices[0].message.content.toString())
         // res.send(data)
