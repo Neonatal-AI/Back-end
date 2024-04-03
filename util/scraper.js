@@ -23,4 +23,4 @@ async function fetchAndParse(url) {
     }
 }
 
-module.exports = fetchAndParse
+module.exports = {fetchAndParse}
