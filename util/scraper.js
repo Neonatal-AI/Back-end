@@ -9,8 +9,8 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     steroid: steroid.toString(),
   };
 
-  // Launch Puppeteer (with or without headless mode)
-  //const browser = await puppeteer.launch({ headless: true });
+  // Launch Puppeteer (with or without headless mode) <--- Use headless mode unless testing/debugging.]
+  // Also necessary to run 'no-sandbox' and 'disable-dev-shm-usage' to optimize speed and allow usage in a heroku dyno
   const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
   const page = await browser.newPage();
 
@@ -97,11 +97,23 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   const singleton = 0;
   const steroid = 0;
   let time1 = new Date().getTime();
-  const survival = await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid);
+  let survival = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
   let time2 = new Date().getTime();
-  console.log(survival);
-  console.log(time2 - time1, "ms");
+  let runtime = time2 - time1;
+  console.log("", survival);
+  console.log("runtime: ", runtime, "ms");
+  survival += runtime;
 })();
 
 
 module.exports = {getEpboResults};
+
+
+
+// I think that the javascript that makes the prediction actually is sent to the browser to run locally.
+// Reasoning:
+//  Near immediate speed arose suspicion. 
+//  Inspection in Burp Suite seems to confirm - results are displayed without processing http req/res cycle.
+// Implication: 
+//  We should try to shave the 1-3 seconds of delay off of our processing time for this app
+//  by finding the javascript or simply asking nichd for the functions needed.
