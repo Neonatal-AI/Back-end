@@ -2,7 +2,6 @@
 // DOTENV mod only for local env. fallbacks in case.
 require('dotenv').config()
 const EXPRESS_PORT = process.env.PORT || 8000
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const SECRET = process.env.SECRET
 
 // connect to either local mongodb server or centralized server
@@ -26,6 +25,7 @@ const bcrypt = require('bcrypt')
 // note
 // local imports
 const scraper = require('./util/scraper.js')
+const openAI = require('./util/openAI/openAICall.js')
 
 // MongoDB client object
 // we will need to update the CONNECTION_STRING environment variable. this is dont on Heroku
@@ -260,11 +260,33 @@ app.post('/createDocs', async (req, res) => {
     translate = req.body.outputOptions.translate
     language = req.body.outputOptions.language
 
+
+    
     // assign the return from the scraper tool to a document 
     try{
         let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
-        console.log(survival)
+        let prompt = `information about the pregnancy:
+        gestational_age = ${gestational_age} weeks
+        birth_weight = ${birth_weight} grams
+        singleton = ${singleton}
+        antenatal steroids = ${steroids}
+        sex = ${sex}
+        ethnicity = ${ethnicity}
+        ruptured membrane = ${ruptured_membrane}
+        length of ruptured membrane = ${length_of_ruptured_membrane}
+        pre-eclampsia = ${pre_eclampsia}
+        clinician_notes = ${clinician_notes}
+        NICHD survival rate prediction = ${survival}`
+    
+        let config = `parameters which you are to adhere to in your response:
+        literacy_level = ${literacy_level}
+        translate = ${translate}
+        language = ${language}`
+        let promptResponse = await openAI.promptGPT(prompt, config)
+        res.json(promptResponse)
+        console.log(promptResponse)
     }catch(error){
+        res.status(500).json({ error: error.toString() });
         console.log(error)
     }
 
