@@ -1,9 +1,10 @@
 // environment variable declaration n shit. 
-// DOTENC mod only for local env. fallbacks in case.
+// DOTENV mod only for local env. fallbacks in case.
 require('dotenv').config()
 const EXPRESS_PORT = process.env.PORT || 8000
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const SECRET = process.env.SECRET
+
 // connect to either local mongodb server or centralized server
 const CONNECTION_STRING = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 const FRONT_END = process.env.FRONT_END || "http://localhost:3000"
@@ -16,16 +17,15 @@ const cors = require('cors')
 const morgan = require('morgan')
 
 // Mongo Modules
-const {MongoClient, ServerApiVersion, ObjectId} = require('mongodb')
+const {MongoClient, ServerApiVersion} = require('mongodb')
 const MongoStore = require('connect-mongo')
 
 // encryption modules
 const bcrypt = require('bcrypt')
+
 // note
 // local imports
-const fetchAndParse = require('./util/scraper.js')
-const validateUrl = require('./util/UrlCheck.js')
-const jobDescription = require('./util/GetJobDescription')
+const scraper = require('./util/scraper.js')
 
 // MongoDB client object
 // we will need to update the CONNECTION_STRING environment variable. this is dont on Heroku
@@ -71,7 +71,7 @@ const app = express()
                 proxy: true,
                 sameSite: 'none', // cross-site
                 secure: true, // Set to true if using HTTPS
-                httpOnly: false, // Prevent client-side JavaScript from accessing cookies
+                httpOnly: true, // Prevent client-side JavaScript from accessing cookies
                 maxAge: 1000*60*30, // Session expiration time (in milliseconds)
                 domain: process.env.COOKIE_ALLOW,
                 path: "/"
@@ -131,7 +131,7 @@ app.post('/registration', async (req, res) => {
             proxy: true,
             sameSite: 'none', // cross-site
             secure: true, // Set to true if using HTTPS
-            httpOnly: false, // Prevent client-side JavaScript from accessing cookies
+            httpOnly: true, // Prevent client-side JavaScript from accessing cookies
             maxAge: 60*30*1000, // Session expiration time (in milliseconds)
             domain: process.env.COOKIE_ALLOW,
             path: "/"
@@ -146,6 +146,7 @@ app.post('/registration', async (req, res) => {
         res.status(500).json({ message: 'OH NO! something went wrong!', error })
     }
 })
+
 app.post('/login', async (req, res) => {
     let db = client.db('resGen')
     let collection = db.collection('users') 
@@ -189,37 +190,22 @@ app.post('/login', async (req, res) => {
         console.error(error)
     } 
 })
-// the logout API endpoint needs to be fixed.... currently, users are unable to logout.
-app.post('/logout', async (req, res) => {
-    console.log(req.headers.cookies)
-    let cookies = req.headers.cookies.split(';')
-    try{
-        for (let cookie of cookies) { 
-        console.log(cookie)
-        let split = cookie.split("=")
-        let cookieName = split[0]
-        console.log(cookieName)
-        res.header('Access-Control-Allow-Origin', FRONT_END);
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.clearCookie(cookieName, {
-            proxy: true,
-            sameSite: 'none', // cross-site
-            secure: true, // Set to true if using HTTPS
-            httpOnly: false, // Prevent client-side JavaScript from accessing cookies
-            // maxAge: 0, // Session expiration time (in milliseconds)
-            domain: process.env.COOKIE_ALLOW,
-            path: "/"
-        })}
-    }catch (error){
-        console.error(error)
-    }
-    return res.send({message:"logout Successful"})
-})
-// We should create an enpoint for renewing session cookies, so that users can stay logged in while active.
-// this backend endpoint should be hit every time the user does something, so that while they are active on the site
-// they will remain logged in.
-app.post('/refreshCookie', async (req, res) => {
-})
+// all og the authentication functions are kind of inadequate. needs better security.
+app.get('/logout', (req, res) => {
+    // Destroy the session
+    req.session.destroy(err => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).send('Error destroying session');
+      } else {
+        // Clear the session cookies
+        res.clearCookie('your-session-cookie-name');
+        // Redirect or send response as needed
+        res.redirect('/'); // Redirect to homepage after logout
+      }
+    });
+  });
+
 
 // this function adds to the database.... It will require EXTENSIVE revision. 
 // Our database may be a little more complex than what I implemented for this last application.
@@ -242,61 +228,75 @@ app.post('/historyPost', async (req, res) => {
     }
 })
 
-app.get('/historyGet', async (req, res) => {
-    const db = client.db('resGen');
-    try {
-        const collection = db.collection('history');
+// app.get('/historyGet', async (req, res) => {
+//     const db = client.db('resGen');
+//     try {
+//         const collection = db.collection('history');
 
-        const data = await collection.find({userid: req.headers.id}).toArray();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.toString() });
-    }
-})
+//         const data = await collection.find({userid: req.headers.id}).toArray();
+//         res.json(data);
+//     } catch (error) {
+//         res.status(500).json({ error: error.toString() });
+//     }
+// })
 
-// this endpoint was never fully built out. 
-// it might prove useful, however
-app.post('/handleFile', async (req, res) => {
-    console.log(req)
-})
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
-app.post('/completions', async (req, res) => {
-    const options = {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${OPENAI_API_KEY}`,
-            "content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model:"gpt-3.5-turbo",
-            messages: [{role:"system",content:"You are to respond to requests for polished resume's and cover letters, helping job seekers match these documents to job descriptions they also provide you."},{role: "user", content: req.body.prompt}],
-            temperature: 0.5,
-            max_tokens: 2000,
-        })
-    }
-    console.log("error on server before fetch", options)
+app.post('/createDocs', async (req, res) => {
+    console.log(req.body)
+    // unpack input from the front end
+    gestational_age = req.body.inputFields.gestational_age
+    birth_weight = req.body.inputFields.birth_weight
+    singleton = req.body.inputFields.singleton
+    steroids = req.body.inputFields.steroids
+    sex = req.body.inputFields.sex
+    ethnicity = req.body.inputFields.ethnicity
+    ruptured_membrane = req.body.inputFields.birth_weight
+    length_of_ruptured_membrane = req.body.inputFields.length_of_ruptured_membrane
+    pre_eclampsia = req.body.inputFields.pre_eclampsia
+    clinician_notes = req.body.inputFields.clinician_notes
+
+    // unpack output options
+    literacy_level = req.body.outputOptions.literacy_level
+    translate = req.body.outputOptions.translate
+    language = req.body.outputOptions.language
+
+    // assign the return from the scraper tool to a document 
     try{
-        options.body["stream"] = true
-        const response = await fetch("https://api.openai.com/v1/chat/completions", options)
-        const data = await response.json()
-        res.send(data)
-        console.log("nice! this user made an API request")
+        let survival = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
+        console.log(survival)
     }catch(error){
         console.log(error)
-        console.log(`these were your options: ${options}`)
     }
-})
 
-// this is a reconstruction of the input handling and 
-// subsequent api requests to OpenAI
-// we could 
-app.post('/completions2', async (req, res) => {
-    // top level vars for 
-    
-    const job = jobDescription(req, OPENAI_API_KEY)
-    console.log(job)
-})
 
+
+
+
+    // const options = {
+    //     method: "POST",
+    //     headers: {
+    //         "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    //         "content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify({
+    //         model:"gpt-3.5-turbo",
+    //         messages: [{role:"system",content:"You are to respond to requests for polished resume's and cover letters, helping job seekers match these documents to job descriptions they also provide you."},{role: "user", content: req.body.prompt}],
+    //         temperature: 0.5,
+    //         max_tokens: 2000,
+    //     })
+    // }
+    // console.log("error on server before fetch", options)
+    // try{
+    //     options.body["stream"] = true
+    //     const response = await fetch("https://api.openai.com/v1/chat/completions", options)
+    //     const data = await response.json()
+    //     res.send(data)
+    //     console.log("nice! this user made an API request")
+    // }catch(error){
+    //     console.log(error)
+    //     console.log(`these were your options: ${options}`)
+    // }
+})
 
 // socket configuration
 // I never got sockets working. but it really would be nice... not necessary but nice.
