@@ -60,13 +60,13 @@ async function fetchData(sysPrompt, prompt, config){
     }
 }
 async function promptGPT() {
-    [prompt, config, sysPrompt] = await Promise.all([
+    [sysPrompt, prompt, config] = await Promise.all([
+        readPrompt(sysPromptPath),
         readPrompt(promptPath),
-        readPrompt(configPath),
-        readPrompt(sysPromptPath)
+        readPrompt(configPath)
     ])
-    fetchData(sysPrompt, config, prompt)
+    fetchData(sysPrompt, prompt, config)
 }
 promptGPT()
-// fetchData(sysPrompt, prompt)
+
 module.exports = { promptGPT }
