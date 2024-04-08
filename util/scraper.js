@@ -65,12 +65,27 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
           const spanElements = rateWrapDiv.find('span');
           if (spanElements.length > 1) {
             average_survival_active_treatment = spanElements.eq(1).text();
+            hospital_range_active_treatment = spanElements.eq(3).text();
+            average_survival_not_active_treatment = spanElements.eq(5).text();
+            hospital_range_not_active_treatment = spanElements.eq(7).text();
+
           } else {
             console.error("Error: Second span element not found");
           }
         } else {
           console.error("Error: rate-wrap div not found");
         }
+
+        const flexWrapDiv = outcomesDiv.find('div.flex-wrapper');
+        const spanElements2 = flexWrapDiv.find('span');
+
+        profound_neurodevelopmental = spanElements2.eq(1).text();
+        moderate_severe_neurodevelopmental = spanElements2.eq(3).text();
+        blindness = spanElements2.eq(5).text();
+        deafness = spanElements2.eq(7).text();
+        moderate_severe_cerebral_palsy = spanElements2.eq(9).text()
+        cognitive_developmental_delay = spanElements2.eq(11).text()
+
       } else {
         console.error("Error: outcomes div not found");
       }
@@ -79,8 +94,20 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     }
 
     // Log the extracted information
-    // console.log('Extracted Information:', average_survival_active_treatment);
-    return average_survival_active_treatment;
+    //console.log('Extracted Information:', average_survival_active_treatment);
+    //return average_survival_active_treatment;
+
+    return [average_survival_active_treatment,
+      hospital_range_active_treatment,
+      average_survival_not_active_treatment,
+      hospital_range_not_active_treatment,
+      profound_neurodevelopmental,
+      moderate_severe_cerebral_palsy,
+      blindness,
+      deafness,
+      moderate_severe_neurodevelopmental,
+      cognitive_developmental_delay];
+
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -97,12 +124,12 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   const singleton = 0;
   const steroid = 0;
   let time1 = new Date().getTime();
-  let survival = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
+  let results = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
   let time2 = new Date().getTime();
   let runtime = time2 - time1;
-  console.log("", survival);
+  console.log("", results);
   console.log("runtime: ", runtime, "ms");
-  survival += runtime;
+  results += runtime;
 })();
 
 
