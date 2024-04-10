@@ -277,7 +277,7 @@ app.post('/createDocs', async (req, res) => {
         pre-eclampsia = ${pre_eclampsia}
         clinician_notes = ${clinician_notes}
         NICHD survival rate prediction = ${survival}`
-        console.log(`survival: ${prompt}`)
+        console.log(`survival: ${survival}`)
 
         let config = `parameters which you are to adhere to in your response:
         literacy_level = ${literacy_level}
