@@ -1,5 +1,6 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const puppeteer = require('puppeteer');
+
 async function getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid) {
   const formUrl = 'https://www.nichd.nih.gov/research/supported/EPBO/use';
   const formData = {
@@ -9,11 +10,10 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     steroid: steroid.toString(),
   };
 
-  // Launch Puppeteer (with or without headless mode) <--- Use headless mode unless testing/debugging.]
-  // Also necessary to run 'no-sandbox' and 'disable-dev-shm-usage' to optimize speed and allow usage in a heroku dyno
-  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
+  // Launch Puppeteer (with or without headless mode)
+  //const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: true, slowMo: false });
   const page = await browser.newPage();
-
 
   try {
     // Navigate to the form URL
@@ -26,18 +26,39 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     const gestationalAgeDropdown = await page.$('select[name="gestational_age"]');
     await gestationalAgeDropdown.select(gestationalAge.toString());
 
-    // Fill other form fields
-    for (const [fieldName, fieldValue] of Object.entries(formData)) {
-      const fieldElement = await page.waitForSelector(`[name="${fieldName}"]`);
+    const birthElement = await page.waitForSelector(`[name="birth_weight"]`)
+    await birthElement.type(formData.birth_weight);
 
-      if (fieldName !== "birth_weight") {
-        const currentValue = await fieldElement.evaluate(el => el.checked ? el.value : '');
-        if (currentValue !== fieldValue) {
-          await fieldElement.click();
-        }
-      } else {
-        await fieldElement.type(fieldValue);
+    try {
+      if (formData.sex == "Male") {
+        sexElement = await page.waitForSelector('[title="male"]');
+        await sexElement.click();
       }
+      else if (formData.sex == "Female") {
+        sexElement = await page.waitForSelector('[title="female"]');
+        await sexElement.click();
+      }
+
+      if (formData.singleton == "True") {
+        singletonElement = await page.waitForSelector('input[title="yes"][name="singleton"]');
+        await singletonElement.click();
+      }
+      else if (formData.singleton == "False") {
+        singletonElement = await page.waitForSelector('input[title="no"][name="singleton"]');
+        await singletonElement.click();
+      }
+
+      if (formData.steroid == "True") {
+        steroidElement = await page.waitForSelector('input[title="yes"][name="steroid"]');
+        await steroidElement.click();
+      }
+      else if (formData.steroid == "False") {
+        steroidElement = await page.waitForSelector('input[title="no"][name="steroid"]');
+        await steroidElement.click();
+      }
+    }
+    catch {
+      console.log("failed");
     }
 
     // Submit the form
@@ -120,27 +141,10 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
   const birthWeight = 401;
 
   //0 or 1 for buttons as they appear on page (0 is male, yes, yes)
-  const sex = 0;
-  const singleton = 0;
-  const steroid = 0;
-  let time1 = new Date().getTime();
-  let results = [await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid)];
-  let time2 = new Date().getTime();
-  let runtime = time2 - time1;
-  console.log("", results);
-  console.log("runtime: ", runtime, "ms");
-  results += runtime;
+  const sex = "Male";
+  const singleton = "False";
+  const steroid = "False";
+
+  const results = await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid);
+  console.log(results);
 })();
-
-
-module.exports = {getEpboResults};
-
-
-
-// I think that the javascript that makes the prediction actually is sent to the browser to run locally.
-// Reasoning:
-//  Near immediate speed arose suspicion. 
-//  Inspection in Burp Suite seems to confirm - results are displayed without processing http req/res cycle.
-// Implication: 
-//  We should try to shave the 1-3 seconds of delay off of our processing time for this app
-//  by finding the javascript or simply asking nichd for the functions needed.
