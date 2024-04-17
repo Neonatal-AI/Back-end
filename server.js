@@ -95,7 +95,7 @@ app.get("/", (req, res) => {
 
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     // unpack input from the front end
     gestational_age = req.body.inputFields.gestational_age
     birth_weight = req.body.inputFields.birth_weight
@@ -137,7 +137,7 @@ app.post('/createDocs', async (req, res) => {
         NICHD deafness chance = ${results[7]}
         NICHD moderate-server cerebral palsy chance = ${results[8]}
         NICHD cognitive developmental delay chance = ${results[9]}`
-        
+        console.log(prompt)
     
         let config = `parameters which you are to adhere to in your response:
         literacy_level = ${literacy_level}
