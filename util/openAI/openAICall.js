@@ -51,7 +51,7 @@ async function fetchData(sysPrompt, prompt, config){
         console.log(data.choices[0].message.content.toString())
         // res.send(data)
         console.log("nice! this user made an API request")
-        return messageContent
+        return response
     }catch(error){
         throw error
     }
