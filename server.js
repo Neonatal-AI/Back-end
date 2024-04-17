@@ -144,7 +144,7 @@ app.post('/createDocs', async (req, res) => {
         translate = ${translate}
         language = ${language}`
         let promptResponse = await openAI.promptGPT(prompt, config)
-        promptResponse = await promptResponse.json()
+        // promptResponse = await promptResponse.json()
         res.send(promptResponse)
         console.log(promptResponse)
     }catch(error){
