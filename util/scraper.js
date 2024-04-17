@@ -10,9 +10,9 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     steroid: steroid.toString(),
   };
 
-  // Launch Puppeteer (with or without headless mode)
-  //const browser = await puppeteer.launch({ headless: true });
-  const browser = await puppeteer.launch({ headless: true, slowMo: false });
+  // Launch Puppeteer (with or without headless mode) <--- Use headless mode unless testing/debugging.]
+  // Also necessary to run 'no-sandbox' and 'disable-dev-shm-usage' to optimize speed and allow usage in a heroku dyno
+  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
   const page = await browser.newPage();
 
   try {
