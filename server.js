@@ -92,153 +92,6 @@ app.get("/", (req, res) => {
     res.send("What are you doing here?\nI didn't want you to see me naked!")
 })
 
-// The registration endpoint should still exist, so users can create an account. 
-// it will need to be edited though.
-app.post('/registration', async (req, res) => {
-    // our database and collection as variables
-    const db = client.db('resGen')
-    const collection = db.collection('users')
-    try {
-        // map request body elements to valiables for readability. 
-        const {firstName, lastName, email, username, password} = req.body
-        // Hash the password before saving in the database
-        const hashedPassword =  await bcrypt.hash(password, 10)
-        // store to object
-        const user = {
-            firstName,
-            lastName,
-            username,
-            password: hashedPassword,
-            email: email.toLowerCase()
-        }
-        // look for a username and email corresponding with the ones in the request body
-        // if exists, reject registration
-        const existingUser = await collection.findOne({ username: username })
-        const existingEmail = await collection.findOne({ email: email })
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists.' })
-        } else if (existingEmail) {
-            return res.status(400).json({ message: 'Email already in use.' })
-        }
-        // insert new user into the user db collection
-        let newUser = await collection.insertOne(user)
-
-        console.log(req.session)
-        console.log(newUser.insertedId.toString())
-        res.header('Access-Control-Allow-Origin', FRONT_END);
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.cookie("session", newUser.insertedId.toString(), {
-            proxy: true,
-            sameSite: 'none', // cross-site
-            secure: true, // Set to true if using HTTPS
-            httpOnly: true, // Prevent client-side JavaScript from accessing cookies
-            maxAge: 60*30*1000, // Session expiration time (in milliseconds)
-            domain: process.env.COOKIE_ALLOW,
-            path: "/"
-        })
-
-        // return to the front end
-        return res.status(200).json({ 
-            message: 'User created'
-        })
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'OH NO! something went wrong!', error })
-    }
-})
-
-app.post('/login', async (req, res) => {
-    let db = client.db('resGen')
-    let collection = db.collection('users') 
-    try {
-        const {username, password} = req.body
-        // check to see if usename in database
-        const existingUser = await collection.findOne({ 
-            username: username
-        })
-        // obscure rejection
-        if (!existingUser) {
-            return res.status(403).json({
-                message: 'invalid credentials' 
-            })
-        }
-        // password check using bcrypt
-        const correctPass = await bcrypt.compare(password, existingUser.password)
-        // obscure rejection
-        if (!correctPass) {
-            return res.status(403).json({ message: 'invalid credentials' })
-        } else {
-            req.session.isAuth = existingUser._id.toString()
-            console.log(process.env.COOKIE_ALLOW)
-            const expires = req.session.cookie.expires
-            res.header('Access-Control-Allow-Origin', FRONT_END);
-            res.header('Access-Control-Allow-Credentials', 'true');
-            res.cookie("session", existingUser._id.toString(), {
-                proxy: true,
-                sameSite: 'none', // cross-site
-                secure: true, // Set to true if using HTTPS
-                httpOnly: false, // Prevent client-side JavaScript from accessing cookies
-                maxAge: 60*30*1000, // Session expiration time (in milliseconds)
-                domain: process.env.COOKIE_ALLOW,
-                path: "/"
-            })
-            return res.status(200).json({
-                message: "Login Successful"
-            })
-        }
-    }catch (error){
-        console.error(error)
-    } 
-})
-// all og the authentication functions are kind of inadequate. needs better security.
-app.get('/logout', (req, res) => {
-    // Destroy the session
-    req.session.destroy(err => {
-      if (err) {
-        console.error('Error destroying session:', err);
-        res.status(500).send('Error destroying session');
-      } else {
-        // Clear the session cookies
-        res.clearCookie('your-session-cookie-name');
-        // Redirect or send response as needed
-        res.redirect('/'); // Redirect to homepage after logout
-      }
-    });
-  });
-
-
-// this function adds to the database.... It will require EXTENSIVE revision. 
-// Our database may be a little more complex than what I implemented for this last application.
-// We will want to include separation between user accounts and patient information
-// we may be able to generalize to some degree and have a single endpoint to store information to the database, 
-// but we may also want to consider 
-app.post('/historyPost', async (req, res) => {
-    const db = client.db('resGen')
-    const document = req.body
-    // document['"date"'] = new Date(document.date)
-    console.log("ID Here:", req.headers.id)
-    const collection = db.collection('history')
-    try {
-        await collection.insertOne(document)
-        res.json({ message: 'History data stored successfully' })
-        console.log("History data sent to server.", document)
-    } catch (error) {
-        console.error(`Error occurred while inserting document: ${error}`, "\n\nREQUEST BODY:\n\n",req.body)
-        res.status(500).json({ message: 'An error occurred' })
-    }
-})
-
-// app.get('/historyGet', async (req, res) => {
-//     const db = client.db('resGen');
-//     try {
-//         const collection = db.collection('history');
-
-//         const data = await collection.find({userid: req.headers.id}).toArray();
-//         res.json(data);
-//     } catch (error) {
-//         res.status(500).json({ error: error.toString() });
-//     }
-// })
 
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
@@ -276,11 +129,6 @@ app.post('/createDocs', async (req, res) => {
         length of ruptured membrane = ${length_of_ruptured_membrane}
         pre-eclampsia = ${pre_eclampsia}
         clinician_notes = ${clinician_notes}
-<<<<<<< HEAD
-        NICHD survival rate prediction = ${survival}`
-        console.log(`survival: ${survival}`)
-
-=======
         NICHD survival rate prediction (with active treatment) = ${results[0]}
         NICHD survival rate prediction (without active treatment) = ${results[2]}
         NICHD profound neurodevelopmental impairment chance = ${results[4]}
@@ -291,60 +139,19 @@ app.post('/createDocs', async (req, res) => {
         NICHD cognitive developmental delay chance = ${results[9]}`
         
     
->>>>>>> Selenium-feature---Nicholas
         let config = `parameters which you are to adhere to in your response:
         literacy_level = ${literacy_level}
         translate = ${translate}
         language = ${language}`
         let promptResponse = await openAI.promptGPT(prompt, config)
-        res.json(promptResponse)
+        res.send(json(promptResponse))
         console.log(promptResponse)
     }catch(error){
         res.status(500).json({ error: error.toString() });
         console.log(error)
     }
-
-
-
-
-
-    // const options = {
-    //     method: "POST",
-    //     headers: {
-    //         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-    //         "content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify({
-    //         model:"gpt-3.5-turbo",
-    //         messages: [{role:"system",content:"You are to respond to requests for polished resume's and cover letters, helping job seekers match these documents to job descriptions they also provide you."},{role: "user", content: req.body.prompt}],
-    //         temperature: 0.5,
-    //         max_tokens: 2000,
-    //     })
-    // }
-    // console.log("error on server before fetch", options)
-    // try{
-    //     options.body["stream"] = true
-    //     const response = await fetch("https://api.openai.com/v1/chat/completions", options)
-    //     const data = await response.json()
-    //     res.send(data)
-    //     console.log("nice! this user made an API request")
-    // }catch(error){
-    //     console.log(error)
-    //     console.log(`these were your options: ${options}`)
-    // }
 })
 
-// socket configuration
-// I never got sockets working. but it really would be nice... not necessary but nice.
-// const { Server } = require("socket.io");
 
-// const io = new Server({ /* options */ });
-
-// io.on("connection", (socket) => {
-//   // ...
-//   console.log("connection made")
-// });
-
-// io.listen(8002);
 app.listen(EXPRESS_PORT, () => console.log(`Listening on ${EXPRESS_PORT}`));
 
