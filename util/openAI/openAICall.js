@@ -60,7 +60,7 @@ async function promptGPT(prompt, config) {
     [sysPrompt] = await Promise.all([
         readPrompt(sysPromptPath)
     ])
-    fetchData(sysPrompt, prompt, config)
+    return await fetchData(sysPrompt, prompt, config)
 }
 const test_prompt_params = {gestational_age : 30,
     birth_weight :500,
