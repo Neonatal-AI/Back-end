@@ -123,7 +123,7 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     // Log the extracted information
     //console.log('Extracted Information:', average_survival_active_treatment);
     //return average_survival_active_treatment;
-    console.log('Extracted Information:',
+    console.log('EXTRACTED INFORMATION:\n',
     "average_survival_active_treatment: ",average_survival_active_treatment,
       "\nhospital_range_active_treatment: ", hospital_range_active_treatment,
       "\naverage_survival_not_active_treatment: ", average_survival_active_treatment,
