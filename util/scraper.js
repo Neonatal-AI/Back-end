@@ -120,7 +120,7 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
     console.log('Extracted Information:',
     "average_survival_active_treatment: ",average_survival_active_treatment,
       "\nhospital_range_active_treatment: ", hospital_range_active_treatment,
-      "\naverage_survival_not_active_treatment: ", coverage_survival_not_active_treatment,
+      "\naverage_survival_not_active_treatment: ", average_survival_active_treatment,
       "\nhospital_range_not_active_treatment: ", hospital_range_not_active_treatment,
       "\nprofound_neurodevelopmental: ", profound_neurodevelopmental,
       "\nmoderate_severe_cerebral_palsy: ",moderate_severe_cerebral_palsy,
