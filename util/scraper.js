@@ -3,11 +3,11 @@ const puppeteer = require('puppeteer');
 
 async function getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid) {
   console.log("INPUTS:\n",
-  "\ngestationalAge: ", gestationalAge,
-    "\nbirthWeight: ", birthWeight,
-    "\nsex: ", sex,
-    "\nsingleton: ", singleton,
-    "\nsteroid: ", steroid)
+  "\ngestationalAge: ", gestationalAge, typeof gestationalAge,
+    "\nbirthWeight: ", birthWeight, typeof birthWeight,
+    "\nsex: ", sex, typeof sex,
+    "\nsingleton: ", singleton, typeof singleton,
+    "\nsteroid: ", steroid, typeof steroid)
   const formUrl = 'https://www.nichd.nih.gov/research/supported/EPBO/use';
   const formData = {
     birth_weight: birthWeight.toString(),
