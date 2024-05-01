@@ -115,7 +115,7 @@ app.post('/createDocs', async (req, res) => {
     
     // assign the return from the scraper tool to a document 
     try{
-        let results = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
+        let results = await scraper.getEpboResults(gestational_age, Number(birth_weight), sex, singleton, steroids)
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
