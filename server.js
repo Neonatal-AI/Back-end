@@ -103,7 +103,7 @@ app.post('/createDocs', async (req, res) => {
     steroids = req.body.inputFields.steroids
     sex = req.body.inputFields.sex
     ethnicity = req.body.inputFields.ethnicity
-    ruptured_membrane = req.body.inputFields.birth_weight
+    ruptured_membrane = req.body.inputFields.ruptured_membrane
     length_of_ruptured_membrane = req.body.inputFields.length_of_ruptured_membrane
     pre_eclampsia = req.body.inputFields.pre_eclampsia
     clinician_notes = req.body.inputFields.clinician_notes
@@ -115,7 +115,7 @@ app.post('/createDocs', async (req, res) => {
     
     // assign the return from the scraper tool to a document 
     try{
-        let results = await scraper.getEpboResults(gestational_age, Number(birth_weight), sex, singleton, steroids)
+        let results = await scraper.getEpboResults(Number(gestational_age), Number(birth_weight), sex, singleton, steroids)
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
