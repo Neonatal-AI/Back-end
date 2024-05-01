@@ -153,17 +153,17 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
 }
 
 // //  // a test of the function.
-// (async () => {
-//   const gestationalAge = 22;
-//   const birthWeight = 401;
+(async () => {
+  const gestationalAge = 22;
+  const birthWeight = 401;
 
-//   //0 or 1 for buttons as they appear on page (0 is male, yes, yes)
-//   const sex = "Male";
-//   const singleton = "False";
-//   const steroid = "False";
+  //0 or 1 for buttons as they appear on page (0 is male, yes, yes)
+  const sex = "Male";
+  const singleton = "False";
+  const steroid = "False";
 
-//   const results = await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid);
-//   console.log(results);
-// })();
+  const results = await getEpboResults(gestationalAge, birthWeight, sex, singleton, steroid);
+  console.log(results);
+})();
 
 module.exports = {getEpboResults};
