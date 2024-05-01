@@ -112,20 +112,18 @@ app.post('/createDocs', async (req, res) => {
     literacy_level = req.body.outputOptions.literacy_level
     translate = req.body.outputOptions.translate
     language = req.body.outputOptions.language
-
-
     
     // assign the return from the scraper tool to a document 
     try{
         let results = await scraper.getEpboResults(gestational_age, birth_weight, sex, singleton, steroids)
-        let prompt = `information about the pregnancy:
+        let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
-        singleton = ${singleton}
-        antenatal steroids = ${steroids}
-        sex = ${sex}
-        ethnicity = ${ethnicity}
-        ruptured membrane = ${ruptured_membrane}
+        singleton birth = ${singleton}
+        use of antenatal steroids = ${steroids}
+        baby's sex = ${sex}
+        baby's ethnicity = ${ethnicity}
+        premature ruptured membrane = ${ruptured_membrane}
         length of ruptured membrane = ${length_of_ruptured_membrane}
         pre-eclampsia = ${pre_eclampsia}
         clinician_notes = ${clinician_notes}
@@ -137,16 +135,24 @@ app.post('/createDocs', async (req, res) => {
         NICHD deafness chance = ${results[7]}
         NICHD moderate-server cerebral palsy chance = ${results[8]}
         NICHD cognitive developmental delay chance = ${results[9]}`
+        console.log("****************************************************************")
+        console.log("BELOW IS THE PROMPT SENT TO OPENAI:\n")
         console.log(prompt)
     
         let config = `parameters which you are to adhere to in your response:
         literacy_level = ${literacy_level}
         translate = ${translate}
         language = ${language}`
+        console.log("AND THE CONFIG PROMPT:\n")
+        console.log(config)
+        console.log("****************************************************************")
         let promptResponse = await openAI.promptGPT(prompt, config)
         // promptResponse = await promptResponse.json()
         res.send(promptResponse)
+        console.log("****************************************************************")
+        console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
         console.log(promptResponse)
+        console.log("****************************************************************")
     }catch(error){
         res.status(500).json({ error: error.toString() });
         console.log(error)

@@ -18,15 +18,6 @@ function readPrompt(path) {
 }
 
 async function fetchData(sysPrompt, prompt, config){
-    // debugging print statements
-    // console.log('Sys prompt file:');
-    // console.log(sysPromptPath);
-    // console.log('Sys prompt:');
-    // console.log(sysPrompt);
-    // console.log('Prompt file:');
-    // console.log(promptPath);
-    // console.log('Prompt:');
-    // console.log(prompt);
     const options = {
         method: "POST",
         headers: {
