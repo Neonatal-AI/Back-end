@@ -39,7 +39,7 @@ async function fetchData(sysPrompt, prompt, config){
         const data = await response.json()
         // console.log(data)
         const messageContent = data.choices[0].message.content.toString()
-        console.log(data.choices[0].message.content.toString())
+        // console.log(data.choices[0].message.content.toString())
         // res.send(data)
         console.log("nice! this user made an API request")
         return data
