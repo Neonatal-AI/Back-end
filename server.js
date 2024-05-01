@@ -151,7 +151,7 @@ app.post('/createDocs', async (req, res) => {
         res.send(promptResponse)
         console.log("****************************************************************")
         console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
-        console.log(promptResponse)
+        console.log(promptResponse.choices[0])
         console.log("****************************************************************")
     }catch(error){
         res.status(500).json({ error: error.toString() });
