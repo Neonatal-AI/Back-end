@@ -25,7 +25,7 @@ async function fetchData(sysPrompt, prompt, config){
             "content-Type": "application/json"
         },
         body: JSON.stringify({
-            model:"gpt-4-0613",
+            model:"gpt-4o-2024-05-13",
             messages: [{role:"user",content:sysPrompt},
                 {role: "user", content: prompt},
                 {role: "user", content: config},
