@@ -6,6 +6,8 @@ This infant is estimated to be X weeks gestation, weighs Y grams, is male/female
 
 The handout should first provide the infant’s estimated survival probability. Then it should include a 50-100 word summary that discusses delivery room care of the infant per NRP guidelines. Then it should proceed to discuss the following topics in relation to prematurity: Intracranial hemorrhage, hypoxic-ischemic encephalopathy, cerebral palsy, developmental delay, retinopathy of prematurity, respiratory distress syndrome, chronic lung disease of prematurity, pulmonary hemorrhage, patent ductus arteriosus, infection, benefits of using breast milk, benefits of using fortifiers or premature formulas, risk of necrotizing enterocolitis, need for using enteral tube for feeding, oral feeding progression, hypoglycemia, thermal regulation, need for IV access, and jaundice.
 
+The handout should be in checklist format, outlining the most important steps a fellow should complete in the prenatal consult, listed by importance and relecance to this specific case.
+
 Include a disclaimer sentence at the end.
 
 You will be provided two messages to help you accomplish your task. 

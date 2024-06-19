@@ -95,7 +95,6 @@ async function getEpboResults(gestationalAge, birthWeight, sex, singleton, stero
             hospital_range_active_treatment = spanElements.eq(3).text();
             average_survival_not_active_treatment = spanElements.eq(5).text();
             hospital_range_not_active_treatment = spanElements.eq(7).text();
-
           } else {
             console.error("Error: Second span element not found");
           }
