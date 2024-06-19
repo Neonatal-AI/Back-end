@@ -26,7 +26,7 @@ async function fetchData(sysPrompt, prompt, config){
         },
         body: JSON.stringify({
             model:"gpt-3.5-turbo",
-            messages: [{role:"system",content:sysPrompt},
+            messages: [{role:"user",content:sysPrompt},
                 {role: "user", content: prompt},
                 {role: "user", content: config},
                 {role:"user", content: "ALL CHUNKS SENT!!!"}],
