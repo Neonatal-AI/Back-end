@@ -113,6 +113,8 @@ app.post('/createDocs', async (req, res) => {
     translate = req.body.outputOptions.translate
     language = req.body.outputOptions.language
     
+    docType = req.body.docType
+    
     // assign the return from the scraper tool to a document 
     try{
         let results = await scraper.getEpboResults(Number(gestational_age), Number(birth_weight), sex, singleton, steroids)
@@ -135,20 +137,24 @@ app.post('/createDocs', async (req, res) => {
         NICHD deafness chance = ${results[7]}
         NICHD moderate-server cerebral palsy chance = ${results[8]}
         NICHD cognitive developmental delay chance = ${results[9]}`
+        
         console.log("****************************************************************")
         console.log("BELOW IS THE PROMPT SENT TO OPENAI:\n")
         console.log(prompt)
     
         let config = `parameters which you are to adhere to in your response:
-        literacy_level = ${literacy_level}
-        translate = ${translate}
-        language = ${language}`
+            literacy_level = ${literacy_level}
+            translate = ${translate}
+            language = ${language}`
+
         console.log("AND THE CONFIG PROMPT:\n")
         console.log(config)
         console.log("****************************************************************")
-        let promptResponse = await openAI.promptGPT(prompt, config)
-        // promptResponse = await promptResponse.json()
+        
+        let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         res.send(promptResponse)
+
+
         console.log("****************************************************************")
         console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
         console.log(promptResponse.choices[0])

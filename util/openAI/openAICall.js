@@ -1,7 +1,7 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 const fs = require('fs');
-const sysPromptPath = `${__dirname}/fellow_handout_sys.txt`;
+
 let sysPrompt = '';
 
 
@@ -38,19 +38,19 @@ async function fetchData(sysPrompt, prompt, config){
         const response = await fetch("https://api.openai.com/v1/chat/completions", options)
         const data = await response.json()
         console.log(data)
-        const messageContent = data.choices[0].message.content.toString()
-        // console.log(data.choices[0].message.content.toString())
-        // res.send(data)
         console.log("nice! this user made an API request")
         return data
     }catch(error){
         throw error
     }
 }
-async function promptGPT(prompt, config) {
+async function promptGPT(prompt, config, docType) {
+    // get the 'system' prompt from files
+    const sysPromptPath = `${__dirname}/${docType}.txt`;
     [sysPrompt] = await Promise.all([
         readPrompt(sysPromptPath)
     ])
+
     return await fetchData(sysPrompt, prompt, config)
 }
 const test_prompt_params = {gestational_age : 30,
