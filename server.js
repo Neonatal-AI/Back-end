@@ -153,8 +153,8 @@ app.post('/createDocs', async (req, res) => {
         let document = promptResponse.choices[0].message.content.toString()
         
         res.json(
-            {document:document,
-             prompt:prompt})
+            [{document:document,
+             prompt:prompt}])
 
 
         console.log("****************************************************************")
