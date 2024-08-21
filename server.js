@@ -150,7 +150,11 @@ app.post('/createDocs', async (req, res) => {
         console.log("****************************************************************")
         
         let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
-        res.send(promptResponse)
+        let document = promptResponse.choices[0].message.content.toString()
+        
+        res.json(
+            {document:document,
+             prompt:prompt})
 
 
         console.log("****************************************************************")
