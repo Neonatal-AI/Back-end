@@ -93,7 +93,7 @@ app.get("/", (req, res) => {
 
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
-    // console.log(req.body)
+
     // unpack input from the front end
     gestational_age = req.body.inputFields.gestational_age
     birth_weight = req.body.inputFields.birth_weight
@@ -151,11 +151,11 @@ app.post('/createDocs', async (req, res) => {
         
         let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         let document = promptResponse.choices[0].message.content.toString()
-        
-        res.json(
-            [{document:document,
-             prompt:prompt}])
-
+        console.log("hasn't sent stuff...")
+        res.send({
+            document: document,
+            prompt: prompt
+        })
 
         console.log("****************************************************************")
         console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
