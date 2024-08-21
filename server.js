@@ -86,12 +86,10 @@ const app = express()
 
 // API ENDPOINTS
 
-
 // why not. a little fun html output in case someone navigates to my server url
 app.get("/", (req, res) => {
     res.send("What are you doing here?\nI didn't want you to see me naked!")
 })
-
 
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
