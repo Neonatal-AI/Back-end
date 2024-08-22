@@ -22,7 +22,6 @@ const MongoStore = require('connect-mongo')
 // encryption modules
 const bcrypt = require('bcrypt')
 
-// note
 // local imports
 const scraper = require('./util/scraper.js')
 const openAI = require('./util/openAI/openAICall.js')
@@ -153,7 +152,7 @@ app.post('/createDocs', async (req, res) => {
         let document = promptResponse.choices[0].message.content.toString()
         console.log("hasn't sent stuff...")
         res.send({
-            document: document,
+            document: promptResponse,
             prompt: prompt
         })
 
