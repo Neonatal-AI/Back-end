@@ -115,6 +115,12 @@ app.post('/createDocs', async (req, res) => {
     // assign the return from the scraper tool to a document 
     try{
         let results = await scraper.getEpboResults(Number(gestational_age), Number(birth_weight), sex, singleton, steroids)
+        let S = results[0]
+        let PN1 = parseInt(results[4].split(" - ")[0])/100
+        let PN2 = parseInt(results[4].split(" - ")[1])/100
+        let MSN1 = parseInt(results[5].split(" - ")[1])/100
+        let MSN2 = parseInt(results[5].split(" - ")[1])/100
+        let intact_survival = (S * (1 - ((PN1+PN2)/2) + ((MSN1+MSN2)/2))*100).toString().concat("%")
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
@@ -126,14 +132,7 @@ app.post('/createDocs', async (req, res) => {
         length of ruptured membrane = ${length_of_ruptured_membrane}
         pre-eclampsia = ${pre_eclampsia}
         clinician_notes = ${clinician_notes}
-        NICHD survival rate prediction (with active treatment) = ${results[0]}
-        NICHD survival rate prediction (without active treatment) = ${results[2]}
-        NICHD profound neurodevelopmental impairment chance = ${results[4]}
-        NICHD moderate-severe neurodevelopmental impairment chance = ${results[5]}
-        NICHD blindness chance = ${results[6]}
-        NICHD deafness chance = ${results[7]}
-        NICHD moderate-server cerebral palsy chance = ${results[8]}
-        NICHD cognitive developmental delay chance = ${results[9]}`
+        calculated chance of intact survival: ${intact_survival}`
         
         console.log("****************************************************************")
         console.log("BELOW IS THE PROMPT SENT TO OPENAI:\n")
@@ -149,7 +148,6 @@ app.post('/createDocs', async (req, res) => {
         console.log("****************************************************************")
         
         let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
-        let document = promptResponse.choices[0].message.content.toString()
         console.log("hasn't sent stuff...")
         res.send({
             document: promptResponse,
