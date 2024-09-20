@@ -118,11 +118,13 @@ app.post('/createDocs', async (req, res) => {
         let S = parseInt(results[0])/100
         // results of EPBO calculator used in calculation of intact survival 
         let PN1 = parseInt(results[4].split(" - ")[0])/100
-        let PN2 = parseInt(results[4].split(" - ")[1])/100
+        if(results[4].split(" - ")[1]){
+            let PN2 = parseInt(results[4].split(" - ")[1])/100
+        }else{let PN2 = PN1}
         let MSN1 = parseInt(results[5].split(" - ")[0])/100
-        let MSN2 = parseInt(results[5].split(" - ")[1])/100
-        let things = `${S}\n${PN1}\n${PN2}\n${MSN1}\n${MSN2}`
-        console.log(things)
+        if(results[5].split(" - ")[1]){
+            let MSN2 = parseInt(results[5].split(" - ")[1])/100
+        }else{let MSN2 = MSN1}
         let intact_survival = (S * (1 - (((PN1+PN2)/2) + ((MSN1+MSN2)/2))))*100
         
         // intact_survival = Number((intact_survival).toFixed(2))
@@ -141,30 +143,19 @@ app.post('/createDocs', async (req, res) => {
         clinician_notes = ${clinician_notes}
         NICHD calculated chance of intact survival: ${intact_survival}`
         
-        console.log("****************************************************************")
-        console.log("BELOW IS THE PROMPT SENT TO OPENAI:\n")
-        console.log(prompt)
     
         let config = `parameters which you are to adhere to in your response:
             literacy_level = ${literacy_level}
             translate = ${translate}
             language = ${language}`
 
-        console.log("AND THE CONFIG PROMPT:\n")
-        console.log(config)
-        console.log("****************************************************************")
-        let promptResponse = {
-            choices: [
-                { text: "Simulated response from OpenAI." }
-            ]
-        };
-        // let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
-        console.log("hasn't sent stuff...")
+        // let promptResponse = {
+        //     choices: [
+        //         { text: "Simulated response from OpenAI." }
+        //     ]
+        // };
+        let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         
-                console.log("****************************************************************")
-                console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
-                // console.log(promptResponse.choices[0])
-                console.log("****************************************************************")
         return res.status(200).send({
             document: promptResponse.choices[0].text,
             prompt: prompt
