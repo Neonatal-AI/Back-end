@@ -153,15 +153,15 @@ app.post('/createDocs', async (req, res) => {
         console.log("AND THE CONFIG PROMPT:\n")
         console.log(config)
         console.log("****************************************************************")
-        let promptResponse = ""
-        // let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
+        // let promptResponse = ""
+        let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         console.log("hasn't sent stuff...")
         
                 console.log("****************************************************************")
                 console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
                 console.log(promptResponse.choices[0])
                 console.log("****************************************************************")
-        return res.status(200).send({
+        return res.status(200).json({
             document: promptResponse,
             prompt: prompt
         })
