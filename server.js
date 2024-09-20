@@ -115,12 +115,19 @@ app.post('/createDocs', async (req, res) => {
     // assign the return from the scraper tool to a document 
     try{
         let results = await scraper.getEpboResults(Number(gestational_age), Number(birth_weight), sex, singleton, steroids)
-        let S = results[0]
+        let S = parseInt(results[0])/100
+        // results of EPBO calculator used in calculation of intact survival 
         let PN1 = parseInt(results[4].split(" - ")[0])/100
         let PN2 = parseInt(results[4].split(" - ")[1])/100
-        let MSN1 = parseInt(results[5].split(" - ")[1])/100
+        let MSN1 = parseInt(results[5].split(" - ")[0])/100
         let MSN2 = parseInt(results[5].split(" - ")[1])/100
-        let intact_survival = (S * (1 - ((PN1+PN2)/2) + ((MSN1+MSN2)/2))*100).toString().concat("%")
+        let things = `${S}\n${PN1}\n${PN2}\n${MSN1}\n${MSN2}`
+        console.log(things)
+        let intact_survival = (S * (1 - (((PN1+PN2)/2) + ((MSN1+MSN2)/2))))*100
+        
+        intact_survival = Number((intact_survival).toFixed(2))
+        console.log(intact_survival)
+        // console.log(PN1, PN2, MSN1, MSN2, intact_survival)
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
@@ -132,7 +139,7 @@ app.post('/createDocs', async (req, res) => {
         length of ruptured membrane = ${length_of_ruptured_membrane}
         pre-eclampsia = ${pre_eclampsia}
         clinician_notes = ${clinician_notes}
-        calculated chance of intact survival: ${intact_survival}`
+        NICHD calculated chance of intact survival: ${intact_survival}`
         
         console.log("****************************************************************")
         console.log("BELOW IS THE PROMPT SENT TO OPENAI:\n")
@@ -146,8 +153,8 @@ app.post('/createDocs', async (req, res) => {
         console.log("AND THE CONFIG PROMPT:\n")
         console.log(config)
         console.log("****************************************************************")
-        
-        let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
+        let promptResponse = ""
+        // let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         console.log("hasn't sent stuff...")
         res.send({
             document: promptResponse,
