@@ -153,7 +153,7 @@ app.post('/createDocs', async (req, res) => {
         console.log("AND THE CONFIG PROMPT:\n")
         console.log(config)
         console.log("****************************************************************")
-        let promptResponse = ""
+        let promptResponse = "message"
         // let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         console.log("hasn't sent stuff...")
         
