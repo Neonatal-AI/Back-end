@@ -162,8 +162,8 @@ app.post('/createDocs', async (req, res) => {
                 console.log(promptResponse.choices[0])
                 console.log("****************************************************************")
         return res.status(200).send({
-            document: promptResponse,
-            prompt: prompt
+            document: "promptResponse",
+            prompt: "prompt"
         });
     }catch(error){
         console.log(error)
