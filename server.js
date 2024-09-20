@@ -125,7 +125,7 @@ app.post('/createDocs', async (req, res) => {
         console.log(things)
         let intact_survival = (S * (1 - (((PN1+PN2)/2) + ((MSN1+MSN2)/2))))*100
         
-        intact_survival = Number((intact_survival).toFixed(2))
+        // intact_survival = Number((intact_survival).toFixed(2))
         console.log(intact_survival)
         // console.log(PN1, PN2, MSN1, MSN2, intact_survival)
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
