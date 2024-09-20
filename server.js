@@ -158,13 +158,13 @@ app.post('/createDocs', async (req, res) => {
         let promptResponse = await openAI.promptGPT(prompt, config, docType) // this is the only really important piece of code.
         
         return res.status(200).send({
-            document: promptResponse.choices[0].text,
+            document: promptResponse.choices[0].message,
             prompt: prompt
         });
     }catch(error){
         console.log(error)
         return res.status(500).send({ 
-            error: error.toString() ,
+            error: error.toString(),
             document: "ERROR",
             prompt: "ERROR"
         });
