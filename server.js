@@ -93,23 +93,25 @@ app.get("/", (req, res) => {
 // This enpoint recieves user input from the front end and sends it to the OpenAI completions endpoint.
 app.post('/createDocs', async (req, res) => {
 
-    // unpack input from the front end
-    gestational_age = req.body.inputFields.gestational_age
-    birth_weight = req.body.inputFields.birth_weight
-    singleton = req.body.inputFields.singleton
-    steroids = req.body.inputFields.steroids
-    sex = req.body.inputFields.sex
-    ethnicity = req.body.inputFields.ethnicity
-    ruptured_membrane = req.body.inputFields.ruptured_membrane
-    length_of_ruptured_membrane = req.body.inputFields.length_of_ruptured_membrane
-    pre_eclampsia = req.body.inputFields.pre_eclampsia
-    clinician_notes = req.body.inputFields.clinician_notes
+    // Unpack input fields and output options from the frontend
+    const {
+        gestational_age,
+        birth_weight,
+        singleton,
+        steroids,
+        sex,
+        ethnicity,
+        ruptured_membrane,
+        length_of_ruptured_membrane,
+        pre_eclampsia,
+        clinician_notes
+    } = req.body.inputFields;
 
-    // unpack output options
-    literacy_level = req.body.outputOptions.literacy_level
-    translate = req.body.outputOptions.translate
-    language = req.body.outputOptions.language
-    
+    const {
+        literacy_level,
+        translate,
+        language
+    } = req.body.outputOptions;
     docType = req.body.docType
     
     // assign the return from the scraper tool to a document 
@@ -129,9 +131,6 @@ app.post('/createDocs', async (req, res) => {
         }else{MSN2 = MSN1}
         let intact_survival = (S * (1 - (((PN1+PN2)/2) + ((MSN1+MSN2)/2))))*100
         
-        // intact_survival = Number((intact_survival).toFixed(2))
-        console.log(intact_survival)
-        // console.log(PN1, PN2, MSN1, MSN2, intact_survival)
         let prompt = `Create an outline to help a NICU employee in their fellowship training to conduct a prenatal consult, using the following information about the pregnancy:
         gestational_age = ${gestational_age} weeks
         birth_weight = ${birth_weight} grams
