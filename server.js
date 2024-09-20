@@ -118,13 +118,15 @@ app.post('/createDocs', async (req, res) => {
         let S = parseInt(results[0])/100
         // results of EPBO calculator used in calculation of intact survival 
         let PN1 = parseInt(results[4].split(" - ")[0])/100
+        let PN2;
         if(results[4].split(" - ")[1]){
-            let PN2 = parseInt(results[4].split(" - ")[1])/100
-        }else{let PN2 = PN1}
+            PN2 = parseInt(results[4].split(" - ")[1])/100
+        }else{PN2 = PN1}
         let MSN1 = parseInt(results[5].split(" - ")[0])/100
+        let MSN2;
         if(results[5].split(" - ")[1]){
-            let MSN2 = parseInt(results[5].split(" - ")[1])/100
-        }else{let MSN2 = MSN1}
+            MSN2 = parseInt(results[5].split(" - ")[1])/100
+        }else{MSN2 = MSN1}
         let intact_survival = (S * (1 - (((PN1+PN2)/2) + ((MSN1+MSN2)/2))))*100
         
         // intact_survival = Number((intact_survival).toFixed(2))
