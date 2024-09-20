@@ -161,13 +161,17 @@ app.post('/createDocs', async (req, res) => {
                 console.log("BELOW IS THE RESPONSE FROM OPENAI:\n")
                 console.log(promptResponse.choices[0])
                 console.log("****************************************************************")
-        return res.status(200).json({
+        return res.status(200).send({
             document: promptResponse,
             prompt: prompt
-        })
+        });
     }catch(error){
         console.log(error)
-        return res.status(500).json({ error: error.toString() });
+        return res.status(500).send({ 
+            error: error.toString() ,
+            document: "ERROR",
+            prompt: "ERROR"
+        });
     }
 })
 
