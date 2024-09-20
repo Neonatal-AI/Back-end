@@ -166,8 +166,8 @@ app.post('/createDocs', async (req, res) => {
             prompt: prompt
         })
     }catch(error){
-        res.status(500).json({ error: error.toString() });
         console.log(error)
+        return res.status(500).json({ error: error.toString() });
     }
 })
 
