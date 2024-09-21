@@ -46,7 +46,7 @@ async function fetchData(sysPrompt, prompt, config){
 }
 async function promptGPT(prompt, config, docType) {
     // get the 'system' prompt from files
-    const sysPromptPath = `${__dirname}/${docType}.txt`;
+    const sysPromptPath = `${__dirname}/prompts/${docType}.txt`;
     [sysPrompt] = await Promise.all([
         readPrompt(sysPromptPath)
     ])
