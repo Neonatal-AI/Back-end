@@ -68,6 +68,5 @@ const testConfig = {
     translate : "no",
     language : null
 };
-// promptGPT(JSON.stringify(test_prompt_params), JSON.stringify(testConfig))
 
 module.exports = { promptGPT }
